@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: config-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: config-demo
+  template:
+    metadata:
+      labels:
+        app: config-demo
+    spec:
+      containers:
+        - name: app
+          image: busybox:1.36
+          command:
+            - /bin/sh
+            - -c
+            - |
+              echo "Application: $APP_NAME"
+              echo "Environment: $APP_ENV"
+              echo "Log Level: $LOG_LEVEL"
+              echo "Secret configured: ${DB_PASSWORD:+yes}"
+              sleep 3600
+          envFrom:
+            - configMapRef:
+                name: app-config
+            - secretRef:
+                name: app-secret
