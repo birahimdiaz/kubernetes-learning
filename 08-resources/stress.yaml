@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: memory-stress
+spec:
+  restartPolicy: Always
+  containers:
+    - name: stress
+      image: python:3.12-alpine
+      command:
+        - python
+        - -c
+        - |
+          import time
+          data = []
+          while True:
+              data.append(bytearray(10 * 1024 * 1024))
+              print(f"Allocated {len(data) * 10} MiB", flush=True)
+              time.sleep(1)
+      resources:
+        requests:
+          memory: "32Mi"
+          cpu: "50m"
+        limits:
+          memory: "64Mi"
+          cpu: "200m"
